@@ -1,3 +1,2 @@
 # Company-Layoff-Analysis
-Analysing company layoffs using mySQL
-Import from csv to mySQL using python 
+Analysing company layoffs using mySQL. Data is imported as a CSV before being transferred to mySQL using Python.
