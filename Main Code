@@ -1,0 +1,60 @@
+import mysql.connector
+
+
+# how to create a database 
+
+mydb = mysql.connector.connect(
+host="localhost",
+user="root",
+password="*********")
+
+mycursor = mydb.cursor()
+mycursor.execute("SHOW DATABASES")
+
+for x in mycursor:
+  print(x)
+
+
+# check database exists
+
+mydb = mysql.connector.connect(
+host="localhost",
+user="root",
+password="*********",
+database="mydatabase")
+
+
+import pandas as pd
+
+# import data 
+
+df = pd.read_csv(r'C:\Users\harry\Downloads\archive (4)\layoffs_data.csv')
+
+print(df.columns)
+
+# selecting data
+
+df1 = df.loc[:,['Company', 'Location','Laid_Off_Count']]
+
+# replacing Nana
+
+df1['Laid_Off_Count'] = df['Laid_Off_Count'].fillna(0)
+
+
+# create cursor and new table
+
+mycursor = mydb.cursor()
+mycursor.execute('DROP TABLE IF EXISTS companyLayoffs;')
+mycursor.execute("CREATE TABLE companyLayoffs (Company varchar(255), Location varchar(255), Laid_Off_Count int);")
+
+for i,row in df1.iterrows():
+    print(row)
+    #here %S means string values 
+    sql = "INSERT INTO mydatabase.companyLayoffs VALUES (%s,%s,%s)"
+    mycursor.execute(sql, tuple(row))
+    # this line saves changes
+    mydb.commit()
+
+mycursor.execute("SELECT Location FROM companyLayoffs Where Laid_Off_Count < 10.0;")
+myresult = mycursor.fetchall()
+print(len(myresult))
